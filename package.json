@@ -1,0 +1,13 @@
+{
+  "name": "classic-games-pack",
+  "version": "1.0.0",
+  "description": "고전게임 체험관 오프라인 팩 - 코딩 수업용 단일 HTML 게임 모음",
+  "private": true,
+  "scripts": {
+    "check": "node test/syntax.js",
+    "smoke": "node test/smoke.js"
+  },
+  "devDependencies": {
+    "jsdom": "^24.0.0"
+  }
+}
