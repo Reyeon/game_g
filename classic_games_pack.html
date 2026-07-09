@@ -934,13 +934,13 @@ function runFormation(api){
 }
 
 /* ============================================================
-   22. 분절 벌레
+   22. 분절 라인
 ============================================================ */
 function runSegment(api){
   const K=makeKeys(); let px,seg,shots,mush,score,lives,over,cool,t;
   function reset(all){px=W/2;shots=[];cool=0;t=0;over=false;if(all){score=0;lives=3;}seg=[];for(let i=0;i<10;i++)seg.push({x:40+i*22,y:60,dir:1,on:true});mush=[];for(let i=0;i<22;i++)mush.push({x:30+Math.random()*420,y:90+Math.random()*260});}
   reset(true);
-  const stop=makeLoop(()=>{ if(over){if(K.k[" "])reset(true);clear();draw();overlay("분절 적에게 닿았다");return;}
+  const stop=makeLoop(()=>{ if(over){if(K.k[" "])reset(true);clear();draw();overlay("분절 라인에 닿았다");return;}
     t++; if(K.k["ArrowLeft"])px-=5;if(K.k["ArrowRight"])px+=5;px=Math.max(18,Math.min(W-18,px)); if(cool>0)cool--; if(K.k[" "]&&cool===0){shots.push({x:px,y:H-58,w:4,h:12});cool=10;}
     if(t%8===0) for(const s of seg) if(s.on){s.x+=s.dir*18; if(s.x<18||s.x>W-18||mush.some(m=>Math.hypot(m.x-s.x,m.y-s.y)<18)){s.dir*=-1;s.y+=22;}}
     for(const sh of shots)sh.y-=9; shots=shots.filter(s=>s.y>-20);
@@ -1635,10 +1635,10 @@ const GAMES = [
     obs:"<b>관찰:</b> 왜 방향키를 떼도 우주선이 계속 미끄러질까? 속도(vx, vy)라는 변수가 위치를 어떻게 바꿀까?",
     hint:"규칙: 우주선은 회전하고 추진력으로 가속한다, 화면 밖은 반대편으로 이어진다 · 목표: 소행성 전부 파괴 · 장애물: 떠다니는 소행성 · 점수: 큰 소행성 20점, 작은 소행성 50점",
     ctrl:"조작: ←→ 회전, ↑ 추진, 스페이스 발사" },
-  { id:"segment", cat:"🚀 슈팅 종류", title:"분절 벌레", year:"센티피드풍 · 몸이 나뉘는 적", run:runSegment,
+  { id:"segment", cat:"🚀 슈팅 종류", title:"분절 라인", year:"분절 이동 · 조각으로 나뉘는 목표", run:runSegment,
     lin:"긴 적의 일부를 맞히면 그 자리에 장애물이 생기며 흐름이 바뀌는 분절 슈팅.",
-    obs:"<b>관찰:</b> 적 하나를 맞혔는데 왜 새 장애물이 생길까? 분절 개수와 버섯 위치가 난이도를 어떻게 바꿀까?",
-    hint:"규칙: 분절 적은 좌우로 이동하다 장애물을 만나면 내려온다 · 목표: 모든 분절 제거 · 장애물: 버섯과 내려오는 분절 · 점수: 분절 30점, 버섯 5점",
+    obs:"<b>관찰:</b> 목표 조각 하나를 맞혔는데 왜 새 장애물이 생길까? 남은 조각 수와 기둥 위치가 난이도를 어떻게 바꿀까?",
+    hint:"규칙: 분절 라인은 좌우로 이동하다 장애물을 만나면 내려온다 · 목표: 모든 조각 제거 · 장애물: 기둥과 내려오는 조각 · 점수: 조각 30점, 기둥 5점",
     ctrl:"조작: ←→ 이동, 스페이스 발사" },
   { id:"pang", cat:"🎈 쪼개기 슈팅 종류", title:"풍선 팡", year:"1989풍 · 쪼개지는 공", run:runPang,
     lin:"공을 맞히면 더 작은 공으로 나뉘는 규칙이 긴장감을 만드는 고정 화면 슈팅.",
@@ -1904,7 +1904,7 @@ const THINK_HINTS = {
   invaders:"적들이 한꺼번에 움직이는 모양을 보세요. 적이 줄어들 때 달라지는 것이 있는지 보세요. 위에서 내려오는 것을 조심해 보세요.",
   formation:"가만히 있는 적과 갑자기 내려오는 적을 비교해 보세요. 같은 적이라도 상태가 바뀌면 움직임이 어떻게 달라질까요?",
   asteroids:"방향키를 떼도 계속 움직이는지 보세요. 화면 밖으로 나간 뒤 어디서 다시 나오는지 보세요. 큰 물체와 작은 물체의 차이를 찾아보세요.",
-  segment:"긴 몸의 한 부분을 맞힌 뒤 화면에 무엇이 남는지 보세요. 장애물이 생기면 적의 이동길이 어떻게 바뀔까요?",
+  segment:"긴 줄의 한 조각을 맞힌 뒤 화면에 무엇이 남는지 보세요. 장애물이 생기면 이동길이 어떻게 바뀔까요?",
   pang:"큰 공을 맞힌 뒤 화면이 더 쉬워지는지 어려워지는지 보세요. 공의 크기와 개수가 어떻게 바뀌는지 따라가 보세요.",
   bubble:"맞히자마자 없어지는지, 잠깐 다른 상태가 되는지 보세요. 점수는 어느 순간에 올라갈까요?",
   bomber:"버튼을 누른 순간과 결과가 나타나는 순간 사이에 시간이 있습니다. 폭발이 어느 방향으로 퍼지는지 관찰해 보세요.",
