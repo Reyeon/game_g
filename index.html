@@ -1189,10 +1189,10 @@ function runYutMini(api){
    35. 자원 교환 섬
 ============================================================ */
 function runResourceIsland(api){
-  const K=makeKeys(); let res, score, turn, market, msg, lock;
-  function reset(){ res={wood:2,stone:1,grain:1}; score=0; turn=1; market=["wood","stone","grain"]; msg="1/2/3 수집, 스페이스로 1세트 건설"; lock=false; }
+  const K=makeKeys(); let res, score, turn, msg, lock, over;
+  function reset(){ res={wood:0,stone:0,grain:0}; score=0; turn=1; msg="1/2/3으로 자원을 모으세요"; lock=false; over=false; }
   reset();
-  const stop=makeLoop(()=>{ const keys=["1","2","3"," "]; if(!keys.some(k=>K.k[k]))lock=false; if(!lock){ if(K.k["1"]){res.wood++;turn++;msg="나무 수집";lock=true;} if(K.k["2"]){res.stone++;turn++;msg="돌 수집";lock=true;} if(K.k["3"]){res.grain++;turn++;msg="곡식 수집";lock=true;} if(K.k[" "]&&res.wood>=2&&res.stone>=1&&res.grain>=1){res.wood-=2;res.stone--;res.grain--;score++;turn++;msg="마을 건설 +1점";lock=true;} if(K.k[" "]&&score>=5){reset();lock=true;} } api.score("점수 "+score+"  ·  턴 "+turn+"  ·  나무 "+res.wood+" 돌 "+res.stone+" 곡식 "+res.grain); clear(); txt("자원 교환 섬",W/2,58,24,COL.y); [["나무",res.wood,COL.g,120],["돌",res.stone,COL.s,240],["곡식",res.grain,COL.y,360]].forEach(a=>{ctx.fillStyle=a[2];ctx.beginPath();ctx.arc(a[3],170,42,0,7);ctx.fill();txt(a[0],a[3],168,16,COL.bg);txt(String(a[1]),a[3],225,28,COL.t);}); txt("건설 비용: 나무2 + 돌1 + 곡식1",W/2,310,16,COL.s); txt(msg,W/2,350,15,COL.c); if(score>=5)overlay("섬 발전 성공!","스페이스로 다시 시작"); });
+  const stop=makeLoop(()=>{ const keys=["1","2","3"," "]; if(!keys.some(k=>K.k[k]))lock=false; if(!lock){ if(over&&K.k[" "]){reset();lock=true;} else if(!over&&K.k["1"]){res.wood++;turn++;msg="나무 +1";lock=true;} else if(!over&&K.k["2"]){res.stone++;turn++;msg="돌 +1";lock=true;} else if(!over&&K.k["3"]){res.grain++;turn++;msg="곡식 +1";lock=true;} else if(!over&&K.k[" "]&&res.wood>=2&&res.stone>=1&&res.grain>=1){res.wood-=2;res.stone--;res.grain--;score++;turn++;msg="비용을 내고 마을 1개 건설";over=score>=5;lock=true;} else if(!over&&K.k[" "]){msg="건설하려면 나무2, 돌1, 곡식1이 필요해요";lock=true;} } api.score("점수 "+score+"/5  ·  턴 "+turn+"  ·  나무 "+res.wood+" 돌 "+res.stone+" 곡식 "+res.grain); clear(); txt("자원 교환 섬",W/2,58,24,COL.y); [["나무",res.wood,COL.g,120],["돌",res.stone,COL.s,240],["곡식",res.grain,COL.y,360]].forEach(a=>{ctx.fillStyle=a[2];ctx.beginPath();ctx.arc(a[3],170,42,0,7);ctx.fill();txt(a[0],a[3],168,16,COL.bg);txt(String(a[1]),a[3],225,28,COL.t);}); txt("1 나무  ·  2 돌  ·  3 곡식",W/2,292,15,COL.s); txt("스페이스: 나무2 + 돌1 + 곡식1을 내고 마을 건설",W/2,320,15,COL.s); txt(msg,W/2,360,15,COL.c); if(over)overlay("섬 발전 성공!","스페이스로 다시 시작"); });
   return()=>{ stop(); K.off(); };
 }
 
@@ -1783,7 +1783,7 @@ const GAMES = [
     lin:"나무, 돌, 곡식을 모아 정해진 비용을 내고 점수를 만드는 경제 보드게임 구조.",
     obs:"<b>관찰:</b> 건설은 자원이 충분할 때만 가능하다. '비용을 낼 수 있음' 조건을 어떻게 확인할까?",
     hint:"규칙: 자원을 모으고 비용을 지불해 건설한다 · 목표: 5점 달성 · 장애물: 부족한 자원 · 점수: 건설 1회 = 1점",
-    ctrl:"조작: 1 나무, 2 돌, 3 곡식, 스페이스 건설" },
+    ctrl:"조작: 1 나무 모으기, 2 돌 모으기, 3 곡식 모으기, 스페이스 비용 내고 건설" },
   { id:"territory", cat:"🎲 보드게임 기본 룰", title:"타일 영토", year:"타일 놓기 · 영역 차지", run:runTerritory,
     lin:"차례대로 빈칸을 차지하며 판의 상태와 점유 수가 바뀌는 타일 놓기 게임.",
     obs:"<b>관찰:</b> 한 번 차지한 칸은 다시 놓을 수 없다. 빈칸인지 아닌지 확인하는 조건은 어디에 있을까?",
