@@ -1853,7 +1853,7 @@ GAMES.forEach(g => {
   b.addEventListener("click", () => select(g,b));
   btns.appendChild(b); g._btn=b;
 });
-const RECOMMENDED = ["pathlink","tileplace","tower","balance","tetris","sokoban","pushluck","diceboard","coinrunner","frogger","typing","grill","missile","maze","snake","stacktower","breakout","rhythm","cards","merge"];
+const RECOMMENDED = ["pathlink","tileplace","tower","balance","pong","pang","tetris","sokoban","diceboard","coinrunner","frogger","typing","grill","missile","maze","snake","stacktower","breakout","rhythm","cards"];
 RECOMMENDED.forEach((id,i)=>{
   const g=GAMES.find(x=>x.id===id);
   if(!g) return;
