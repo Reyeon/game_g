@@ -41,6 +41,25 @@
   .pad-btn { min-width:58px; min-height:44px; border:1px solid #4DD9E8; border-radius:8px; background:#1E2246; color:#EDEFFC; font-family:inherit; font-size:16px; font-weight:bold; touch-action:none; }
   .pad-btn.action { min-width:132px; border-color:#FFD23F; color:#FFD23F; }
   .pad-btn:active, .pad-btn.on { background:#FFD23F; color:#12142B; }
+  body.touch-device .mobile-pad { display:block; }
+  @media (hover: none), (pointer: coarse), (any-pointer: coarse) {
+    .mobile-pad { display:block; }
+  }
+  @media (max-width: 1024px) and (any-pointer: coarse) {
+    body { display:block; min-height:100vh; }
+    aside { width:100%; min-width:0; height:auto; max-height:44vh; position:relative; padding:14px 12px; }
+    aside h1 { font-size:16px; }
+    .gbtn, .homebtn, .recbtn { font-size:12.5px; padding:9px 10px; }
+    main { padding:14px 10px 18px; }
+    .head, .info { max-width:480px; }
+    .head h2 { font-size:20px; display:block; margin-bottom:6px; }
+    .chip { margin-left:0; }
+    .info { border-radius:8px; padding:10px 12px; font-size:12.5px; }
+    #stage { width:100%; max-width:480px; }
+    canvas { width:100%; height:auto; border-radius:8px; touch-action:none; }
+    #hud { font-size:13px; }
+    .ctrl { max-width:480px; line-height:1.45; }
+  }
   @media (max-width: 760px) {
     body { display:block; min-height:100vh; }
     aside { width:100%; min-width:0; height:auto; max-height:44vh; position:relative; padding:14px 12px; }
@@ -105,6 +124,7 @@
 
 <script>
 "use strict";
+if(navigator.maxTouchPoints>0 || "ontouchstart" in window) document.body.classList.add("touch-device");
 const cv = document.getElementById("cv");
 const ctx = cv.getContext("2d");
 const W = 480, H = 480;
