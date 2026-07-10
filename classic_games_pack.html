@@ -36,6 +36,27 @@
   #hud { text-align:center; margin-top:8px; font-size:15px; font-weight:bold; color:#7BE382; min-height:22px; }
   .ctrl { margin-top:6px; font-size:12px; color:#9BA3D0; text-align:center; }
   .credit { margin-top:14px; font-size:11px; color:#5C6396; text-align:center; }
+  .mobile-pad { display:none; width:100%; max-width:480px; margin-top:10px; user-select:none; }
+  .pad-row { display:flex; justify-content:center; gap:8px; margin-bottom:8px; }
+  .pad-btn { min-width:58px; min-height:44px; border:1px solid #4DD9E8; border-radius:8px; background:#1E2246; color:#EDEFFC; font-family:inherit; font-size:16px; font-weight:bold; touch-action:none; }
+  .pad-btn.action { min-width:132px; border-color:#FFD23F; color:#FFD23F; }
+  .pad-btn:active, .pad-btn.on { background:#FFD23F; color:#12142B; }
+  @media (max-width: 760px) {
+    body { display:block; min-height:100vh; }
+    aside { width:100%; min-width:0; height:auto; max-height:44vh; position:relative; padding:14px 12px; }
+    aside h1 { font-size:16px; }
+    .gbtn, .homebtn, .recbtn { font-size:12.5px; padding:9px 10px; }
+    main { padding:14px 10px 18px; }
+    .head, .info { max-width:480px; }
+    .head h2 { font-size:20px; display:block; margin-bottom:6px; }
+    .chip { margin-left:0; }
+    .info { border-radius:8px; padding:10px 12px; font-size:12.5px; }
+    #stage { width:100%; max-width:480px; }
+    canvas { width:100%; height:auto; border-radius:8px; touch-action:none; }
+    #hud { font-size:13px; }
+    .ctrl { max-width:480px; line-height:1.45; }
+    .mobile-pad { display:block; }
+  }
 </style>
 </head>
 <body>
@@ -61,6 +82,24 @@
   <div id="stage"><canvas id="cv" width="480" height="480"></canvas></div>
   <div id="hud"></div>
   <div class="ctrl" id="g-ctrl"></div>
+  <div class="mobile-pad" id="mobilePad" aria-label="모바일 조작 버튼">
+    <div class="pad-row">
+      <button type="button" class="pad-btn" data-key="ArrowUp" aria-label="위">↑</button>
+    </div>
+    <div class="pad-row">
+      <button type="button" class="pad-btn" data-key="ArrowLeft" aria-label="왼쪽">←</button>
+      <button type="button" class="pad-btn action" data-key=" " aria-label="액션">액션</button>
+      <button type="button" class="pad-btn" data-key="ArrowRight" aria-label="오른쪽">→</button>
+    </div>
+    <div class="pad-row">
+      <button type="button" class="pad-btn" data-key="ArrowDown" aria-label="아래">↓</button>
+    </div>
+    <div class="pad-row">
+      <button type="button" class="pad-btn" data-key="1" aria-label="1번">1</button>
+      <button type="button" class="pad-btn" data-key="2" aria-label="2번">2</button>
+      <button type="button" class="pad-btn" data-key="3" aria-label="3번">3</button>
+    </div>
+  </div>
   <div class="credit">이 게임 팩 전체가 생성형 AI 바이브코딩으로 만든 단일 HTML 파일입니다 — 여러분이 만들 게임과 같은 방식!</div>
 </main>
 
@@ -84,6 +123,33 @@ function makeKeys(){
   const u = e => { k[e.key]=false; };
   window.addEventListener("keydown", d); window.addEventListener("keyup", u);
   return { k, off(){ window.removeEventListener("keydown", d); window.removeEventListener("keyup", u); } };
+}
+const mobileHeldKeys = new Set();
+function sendMobileKey(key,type){
+  window.dispatchEvent(new KeyboardEvent(type,{key,bubbles:true,cancelable:true}));
+}
+function setupMobilePad(){
+  document.querySelectorAll(".pad-btn").forEach(btn=>{
+    const key = btn.dataset.key;
+    const down = e => {
+      e.preventDefault();
+      if(mobileHeldKeys.has(key)) return;
+      mobileHeldKeys.add(key);
+      btn.classList.add("on");
+      sendMobileKey(key,"keydown");
+    };
+    const up = e => {
+      e.preventDefault();
+      if(!mobileHeldKeys.has(key)) return;
+      mobileHeldKeys.delete(key);
+      btn.classList.remove("on");
+      sendMobileKey(key,"keyup");
+    };
+    btn.addEventListener("pointerdown",down);
+    btn.addEventListener("pointerup",up);
+    btn.addEventListener("pointercancel",up);
+    btn.addEventListener("pointerleave",up);
+  });
 }
 function clear(){ ctx.fillStyle = COL.bg; ctx.fillRect(0,0,W,H); }
 function txt(t,x,y,size,color,align){ ctx.fillStyle=color||COL.t; ctx.font="bold "+size+"px 'Malgun Gothic',sans-serif"; ctx.textAlign=align||"center"; ctx.fillText(t,x,y); }
@@ -1986,6 +2052,7 @@ function select(g,b){
   currentStop = g.run(api);
 }
 showIntro();
+setupMobilePad();
 </script>
 </body>
 </html>
