@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "check": "node test/syntax.js",
-    "smoke": "node test/smoke.js"
+    "smoke": "node test/smoke.js",
+    "test:mobile": "node test/mobile.js"
   },
   "devDependencies": {
     "jsdom": "^24.0.0"
